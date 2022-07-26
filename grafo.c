@@ -4,18 +4,16 @@
 #include "grafo.h"
 
 //------------------------------------------------------------------------------
-grafo le_grafo(void) {
-  grafo grafoLeitura 
+grafo le_grafo(void) { 
   return agread(stdin, NULL); 
 }
 //------------------------------------------------------------------------------
-void destroi_grafo(grafo g) {
-  
+void destroi_grafo(grafo g) { 
+  agfree(g, NULL);
   return 1;
 }
 //------------------------------------------------------------------------------
 grafo escreve_grafo(grafo g) {
-  
   return agwrite(g, stdout);
 }
 
