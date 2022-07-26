@@ -26,7 +26,7 @@ void destroi_grafo(grafo g);
 
 grafo escreve_grafo(grafo g);
 
-// -----------------------------------------------------------------------------
+// FUNCIONA -----------------------------------------------------------------------------
 // devolve o número de vértices de g
 
 int n_vertices(grafo g);
