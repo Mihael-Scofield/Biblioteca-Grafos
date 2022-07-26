@@ -19,56 +19,61 @@ grafo escreve_grafo(grafo g) {
 
 // -----------------------------------------------------------------------------
 int n_vertices(grafo g) {
-  Agnode_t  *vertice;
-  int contador = 0;
-  
-  for (vertice = agfstnode(g); vertice; vertice = agnxtnode(g, vertice)) {
-    contador++;
-  }
-
-  return contador;
+  return agnnodes(g);
 }
 
 // -----------------------------------------------------------------------------
 int n_arestas(grafo g) {
-  Agnode_t  *vertice;
-  Agedge_t  *aresta;
-  int contador = 0;
-
-  for (vertice = agfstnode(g); vertice; vertice = agnxtnode(g, vertice)) {
-    for (aresta = agfstedge(g, vertice); aresta; aresta = agnxtedge(g, aresta, vertice)) {
-      contador++;
-    }
-  }
-
-  // Necessario dividir por dois, pois, o looping da maneira que ele se encontra
-  // esta pegando duas vezes as mesmas arestas.
-  // Ao tentar com arestas de saida apenas, algumas arestas ficam de fora por algum motivo.
-  return contador / 2;
+  agnedges(g);
 }
 
 // -----------------------------------------------------------------------------
 int grau(vertice v, grafo g) {
-  
-  return 0;
+  return agdegree(g, v, TRUE, TRUE);
 }
 
 // -----------------------------------------------------------------------------
 int grau_maximo(grafo g)  {
-  
-  return 0;
+  int grauMax = 0;
+  int aux = 0;
+  vertice *vertices;
+
+  for (vertices = agfstnode(g); vertices; vertices = agnxtnode(g, vertices)) {
+    aux = grau(vertices, g);
+    if (aux >= grauMax) {
+      grauMax = aux;
+    }
+  }
+  return grauMax;
 }
 
 // -----------------------------------------------------------------------------
 int grau_minimo(grafo g)  {
-  
-  return 0;
+  int grauMin = 0;
+  int aux = 0;
+  vertice *vertices;
+
+  for (vertices = agfstnode(g); vertices; vertices = agnxtnode(g, vertices)) {
+    aux = grau(vertices, g);
+    if (aux < grauMin || grauMin == 0) { // OR necessario para considerar o primeiro caso
+      grauMin = aux;
+    }
+  }
+  return grauMin;
 }
 
 // -----------------------------------------------------------------------------
 int grau_medio(grafo g) {
+  int grauMedio = 0;
+  int aux = 0;
+  vertice *vertices;
+
+  for (vertices = agfstnode(g); vertices; vertices = agnxtnode(g, vertices)) {
+    aux = grau(vertices, g);
+    grauMedio += aux;
+  }
   
-  return 0;
+  return grauMedio/n_vertices(g);
 }
 
 // -----------------------------------------------------------------------------
