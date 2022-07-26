@@ -19,8 +19,13 @@ grafo escreve_grafo(grafo g) {
 
 // -----------------------------------------------------------------------------
 int n_vertices(grafo g) {
-  
-  return 0;
+  int contador = 0;
+  Agnode_t  *vertice;
+  for (vertice = agfstnode(g); vertice; vertice = agnxtnode(g, vertice)) {
+    contador++;
+  }
+
+  return contador;
 }
 
 // -----------------------------------------------------------------------------
