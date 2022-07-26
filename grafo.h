@@ -32,7 +32,7 @@ grafo escreve_grafo(grafo g);
 int n_vertices(grafo g);
 
 
-// -----------------------------------------------------------------------------
+// FUNCIONA -----------------------------------------------------------------------------
 // devolve o número de arestas do grafo
 
 int n_arestas(grafo g);

@@ -40,7 +40,11 @@ int n_arestas(grafo g) {
       contador++;
     }
   }
-  return contador/2;
+
+  // Necessario dividir por dois, pois, o looping da maneira que ele se encontra
+  // esta pegando duas vezes as mesmas arestas.
+  // Ao tentar com arestas de saida apenas, algumas arestas ficam de fora por algum motivo.
+  return contador / 2;
 }
 
 // -----------------------------------------------------------------------------
