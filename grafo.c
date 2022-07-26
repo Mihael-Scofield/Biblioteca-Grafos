@@ -83,9 +83,26 @@ int regular(grafo g) {
 }
 
 // -----------------------------------------------------------------------------
+// A ideia eh testar se todos os graus sao iguais
+// para isso, garanti que no looping eu tenha um valor do vertice anterior e um do atual
 int completo(grafo g) {
+  int grauAtual = 0;
+  int grauAnterior = 0;
+  vertice *vertices;
+
+  for (vertices = agfstnode(g); vertices; vertices = agnxtnode(g, vertices)) {
+    grauAtual = grau(vertices, g);
+    if (grauAtual != grauAnterior && grauAnterior != 0) {
+      return 0;
+    }
+    grauAnterior = grauAtual;
+  }
+
+  if (n_arestas(g) - 1 != grauAtual) { // Verifica se o grafo eh um Kn
+    return 0; 
+  }
   
-  return 0;
+  return 1;
 }
 
 // -----------------------------------------------------------------------------
