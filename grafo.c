@@ -19,8 +19,9 @@ grafo escreve_grafo(grafo g) {
 
 // -----------------------------------------------------------------------------
 int n_vertices(grafo g) {
-  int contador = 0;
   Agnode_t  *vertice;
+  int contador = 0;
+  
   for (vertice = agfstnode(g); vertice; vertice = agnxtnode(g, vertice)) {
     contador++;
   }
@@ -30,8 +31,20 @@ int n_vertices(grafo g) {
 
 // -----------------------------------------------------------------------------
 int n_arestas(grafo g) {
-  
-  return 0;
+  Agnode_t  *vertice;
+  Agedge_t  *aresta;
+  int contador = 0;
+
+  for (vertice = agfstnode(g); vertice; vertice = agnxtnode(g, vertice)) {
+    for (aresta = agfstedge(g, vertice); aresta; aresta = agnxtedge(g, aresta, vertice)) {
+      contador++;
+    }
+  }
+
+  // Necessario dividir por dois, pois, o looping da maneira que ele se encontra
+  // esta pegando duas vezes as mesmas arestas.
+  // Ao tentar com arestas de saida apenas, algumas arestas ficam de fora por algum motivo.
+  return contador / 2;
 }
 
 // -----------------------------------------------------------------------------
