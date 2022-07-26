@@ -77,14 +77,38 @@ int grau_medio(grafo g) {
 }
 
 // -----------------------------------------------------------------------------
+// A ideia eh testar se todos os graus sao iguais
+// para isso, garanti que no looping eu tenha um valor do vertice anterior e um do atual
 int regular(grafo g) {
-  
-  return 0;
+  int grauAtual = 0;
+  int grauAnterior = 0;
+  vertice *vertices;
+
+  for (vertices = agfstnode(g); vertices; vertices = agnxtnode(g, vertices)) {
+    grauAtual = grau(vertices, g);
+    if (grauAtual != grauAnterior && grauAnterior != 0) {
+      return 0;
+    }
+    grauAnterior = grauAtual;
+  }
+
+  return 1; // passou em todos os testes
 }
 
 // -----------------------------------------------------------------------------
+
 int completo(grafo g) {
-  
+  // Para ser completo precisa ser regular
+  if (regular(g)) {
+    // Pega um vertice qualquer 
+    vertice *vertices;
+    vertices = agfstnode(g);
+    vertices = agnxtnode(g, vertices);
+
+    if (n_arestas(g) - 1 == grau(vertices, g)) { // Verifica se o grafo eh um Kn
+      return 1; 
+    }
+  }
   return 0;
 }
 

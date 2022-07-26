@@ -7,11 +7,11 @@
 
 int main(void) {
 
-  vertice *v;
+  //vertice *v;
   grafo g = le_grafo();
 
   //escreve_grafo(g);
-  int n = grau_medio(g);
+  int n = completo(g);
   printf("\n %d \n", n);
   
   destroi_grafo(g);
