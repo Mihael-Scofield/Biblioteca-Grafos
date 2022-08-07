@@ -11,7 +11,7 @@ int main(void) {
   grafo g = le_grafo();
 
   //escreve_grafo(g);
-  int n = conexo(g);
+  int n = n_triangulos(g);
   printf("\n %d \n", n);
   
   // Liberacao de memoria
