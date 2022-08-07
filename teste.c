@@ -9,6 +9,7 @@ int main(void) {
 
   //vertice *v;
   grafo g = le_grafo();
+  vertice f;
 
   //escreve_grafo(g);
   int n = n_triangulos(g);

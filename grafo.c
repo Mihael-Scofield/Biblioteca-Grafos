@@ -246,8 +246,26 @@ int **matriz_adjacencia(grafo g) {
 
 // -----------------------------------------------------------------------------
 grafo complemento(grafo g) {
+  grafo grafoAux;
+  grafoAux = agopen(FALSE, Agundirected, NULL);
+
+  // Copia os vertices de g em grafoAux
+  for (vertice v = agfstnode(g); v; v = agnxtnode(g,v)){
+    agnode(grafoAux,agnameof(v),TRUE);
+  }
   
-  return NULL;
+  // Faz o complemento
+  for (vertice vi = agfstnode(g); vi; vi = agnxtnode(g,vi)){
+    for (vertice vj = agfstnode(g); vj; vj = agnxtnode(g,vj)){
+      Agedge_t *a1 = agedge(g, vi, vj, NULL, FALSE);
+      Agedge_t *a2 = agedge(grafoAux, agnode(grafoAux, agnameof(vi), FALSE), agnode(grafoAux, agnameof(vj), FALSE), NULL, FALSE);
+      if (a1 == NULL && a2 == NULL && vi != vj) { // Cria uma aresta no grafo auxiliar se ela nao existia no original
+        agedge(grafoAux, agnode(grafoAux, agnameof(vi), FALSE), agnode(grafoAux, agnameof(vj), FALSE), NULL, TRUE);
+      }
+    }
+  }
+
+  return grafoAux;
 }
 
 
