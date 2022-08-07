@@ -131,9 +131,35 @@ int n_triangulos(grafo g) {
 }
 
 // -----------------------------------------------------------------------------
+/* A ideia e criar uma matriz de ponteiros onde
+matriz[i][j] = 0 se nao existe aresta em {i, j}
+matriz[i][j] = 1 se existe aresta em {i, j} */
 int **matriz_adjacencia(grafo g) {
+  int tamanho = n_vertices(g);
+  vertice u, v;
+
+  // Malloca Matriz
+  int **matrizAdjacencia = malloc(tamanho*sizeof(int*) + tamanho*tamanho*sizeof(int));
+  if (!(matrizAdjacencia)) { // Checa se o malloc funcionou
+    return NULL;
+  }
+  matrizAdjacencia[0] = (int *) (matrizAdjacencia + tamanho); // Ponteiro vai para primeira linha
+  for (int i = 1; i < tamanho; i++) { // posiciona ponteiros nas demais i linhas
+    matrizAdjacencia = matrizAdjacencia[0] + (i * tamanho); // Boa pratica de indexacao
+  }
+
+  for (int i = 0, u = agfstnode(g); u; u = agnxtnode(g, u), i++) { // necessario camianhar com o indice e o vertice
+    for (int j = 0, v = agfstnode(g); v; v = agnextnode(g, v), j++) {
+      if (i != j && agedge(g, u, v, NULL, 0) != NULL) { // Nao existe aresta de looping, {i, i} deve ser verificado
+        matrizAdjacencia[i][j] = 1;
+      }
+      else {
+        matrizAdjacencia[i][j] = 0;
+      }
+    }
+  }
   
-  return NULL;
+  return matrizAdjacencia;
 }
 
 // -----------------------------------------------------------------------------

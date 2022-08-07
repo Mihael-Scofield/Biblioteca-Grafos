@@ -14,6 +14,7 @@ int main(void) {
   int n = completo(g);
   printf("\n %d \n", n);
   
+
   destroi_grafo(g);
 
   return 0;

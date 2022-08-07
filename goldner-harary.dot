@@ -1,7 +1,7 @@
 strict graph "Goldner-Harary graph" {
 0;
 1;
-2;
+2;0
 3;
 4;
 5;

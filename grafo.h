@@ -58,12 +58,12 @@ int grau_minimo(grafo g);
 
 int grau_medio(grafo g);
 
-//------------------------------------------------------------------------------
+// FUNCIONA ------------------------------------------------------------------------------
 // devolve 1 se g é regular, ou 0 caso contrário
 
 int regular(grafo g);
 
-//------------------------------------------------------------------------------
+// FUNCIONA ------------------------------------------------------------------------------
 // devolve 1 se g é completo, ou 0 caso contrário
 
 int completo(grafo g);
@@ -83,7 +83,7 @@ int bipartido(grafo g);
 
 int n_triangulos(grafo g);
 
-//------------------------------------------------------------------------------
+// FUNCIONA ------------------------------------------------------------------------------
 // devolve uma matriz de adjacência de g onde as linhas/colunas
 // estão ordenadas do mesmo modo que agfstnode() e agnxtnode()
 // em libcgraph
