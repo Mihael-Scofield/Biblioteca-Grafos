@@ -101,11 +101,11 @@ int completo(grafo g) {
   // Para ser completo precisa ser regular
   if (regular(g)) {
     // Pega um vertice qualquer 
-    vertice *vertices;
-    vertices = agfstnode(g);
-    vertices = agnxtnode(g, vertices);
+    // vertice *vertices;
+    // vertices = agfstnode(g);
+    // vertices = agnxtnode(g, vertices);
 
-    if (n_arestas(g) - 1 == grau(vertices, g)) { // Verifica se o grafo eh um Kn
+    if (n_arestas(g) - 1 == grau_medio(g)) { // Verifica se o grafo eh um Kn
       return 1; 
     }
   }
