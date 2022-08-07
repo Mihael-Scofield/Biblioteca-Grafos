@@ -151,8 +151,53 @@ int bipartido(grafo g) {
 
 // -----------------------------------------------------------------------------
 int n_triangulos(grafo g) {
+  int **matrizAdjacencia, **matAux, **matMult, size;
+  unsigned int u_size;
   
-  return 0;
+  size = n_vertices(g);
+  matrizAdjacencia = matriz_adjacencia(g);
+  u_size = (unsigned int) size;
+
+  // Inicia as matrizes auxiliares e "seta" seus ponteiros
+  matAux = malloc(u_size*sizeof(int*) + u_size*u_size*sizeof(int));
+  matMult = malloc(u_size*sizeof(int*) + u_size*u_size*sizeof(int));
+
+  matAux[0] = (int*) (matAux + size);
+  for (int i=1; i < size; i++)      
+    matAux[i] = matAux[0] + (i * size);
+
+  matMult[0] = (int*) (matMult + size);
+  for (int i=1; i < size; i++)
+    matMult[i] = matMult[0] + (i * size);
+
+  // Copia elementos da matriz de adjacencia para a auxiliar 
+  for (int i = 0; i < size; i++)
+    for (int j = 0; j < size; j++)
+      matAux[i][j] = matrizAdjacencia[i][j];
+
+  // Eleva a matriz de adjacencia a 2 potencia
+  for (int i = 0; i < size; i++)
+    for (int j = 0; j < size; j++)
+      for (int k = 0; k < size; k++)
+        matMult[i][j] += matrizAdjacencia[i][k]*matAux[k][j];
+
+  // Eleva a matriz de adjacencia a 3 potencia
+  for (int i = 0; i < size; i++)
+    for (int j = 0; j < size; j++)
+      for (int k = 0; k < size; k++)
+        matAux[i][j] += matMult[i][k]*matrizAdjacencia[k][j];
+        
+  // Calculo do Trace
+  int trace = 0;
+  for (int i = 0; i < size; i++)
+    trace += matAux[i][i];
+  
+  // Liberacao de memorias
+  free(matAux);
+  free(matMult);
+  free(matrizAdjacencia);
+  
+  return trace/6;
 }
 
 // -----------------------------------------------------------------------------

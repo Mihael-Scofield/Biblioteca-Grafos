@@ -68,7 +68,7 @@ int regular(grafo g);
 
 int completo(grafo g);
 
-//------------------------------------------------------------------------------
+// FUNCIONA ------------------------------------------------------------------------------
 // devolve 1 se g é conexo, ou 0 caso contrário
 
 int conexo(grafo g);
@@ -78,7 +78,7 @@ int conexo(grafo g);
 
 int bipartido(grafo g);
 
-//------------------------------------------------------------------------------
+// FUNCIONA ------------------------------------------------------------------------------
 // devolve o número de triângulos (subgrafos completos de 3 vértices) em g
 
 int n_triangulos(grafo g);
