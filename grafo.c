@@ -145,7 +145,17 @@ int conexo(grafo g) {
 
 // -----------------------------------------------------------------------------
 int bipartido(grafo g) {
-  
+  int **matrizAdjacente, *cores, tamanho;
+  tamanho = n_vertices(g);
+  matrizAdjacente = matriz_adjacencia(g);
+  cores = malloc(((unsigned int) tamanho) * sizeof(int));
+
+  for(int i = 0; i < tamanho; i++)
+      cores[i] = -1;
+        
+  int pos = 0;
+  return colore(matrizAdjacente, cores, tamanho, pos, 1);
+    
   return 0;
 }
 
@@ -256,4 +266,26 @@ void buscaConexo(int i, int tamanho, int *visitados, int **matrizAdjacencia) {
   }
 }
 
+// Funcao Auxiliar de Bipartido
+int colore(int **matrizAdjacente, int cores[], int tamanho, int pos, int c) {
+  if(cores[pos] != -1 && cores[pos] !=c) {
+    return 0;
+  }
+         
+  cores[pos] = c;
+  int ans = 1;
 
+  for(int i=0;i<tamanho;i++){
+      if(matrizAdjacente[pos][i]){
+        if(cores[i] == -1)
+          ans &= colore(matrizAdjacente,cores,tamanho,i,1-c);
+        if(cores[i] !=-1 && cores[i] != 1-c)
+          return 0;
+      }
+      if (!ans) {
+        return 0;
+      }
+  }
+   
+  return 1;
+}
