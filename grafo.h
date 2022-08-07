@@ -98,6 +98,7 @@ grafo complemento(grafo g);
 
 //------------------------------------------------------------------------------
 // FUNÇÕES IMPLEMENTADAS POR MIM
-
+// Funcao Auxiliar de Conexo
+void buscaConexo(int i, int tamanho, int *visitados, int **matrizAdjacencia);
 
 #endif
