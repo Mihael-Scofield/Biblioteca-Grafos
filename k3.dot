@@ -1,5 +1,7 @@
 graph K3 {
     layout=circo;
     node[shape=point, color=red];
-    a--b--c--a;
+    b;
+    a;
+    c;
 }

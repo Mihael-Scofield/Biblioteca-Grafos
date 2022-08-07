@@ -114,6 +114,31 @@ int completo(grafo g) {
 
 // -----------------------------------------------------------------------------
 int conexo(grafo g) {
+  int **matrizAdjacencia = matriz_adjacencia(g);
+  int tamanho = n_vertices(g);
+  int *visitados = (int *) malloc(tamanho * sizeof(int));
+
+  int numeroComponentes = 0;
+  
+  // Nosso vetor de vistidados deve iniciar zerado
+  for(int i = 0; i < tamanho; i++) {
+    visitados[i] = 0;
+  }
+
+  // Agora, basta visitar os vertices adjacentes
+  for (int i = 0; i < tamanho; i++) {
+    if (visitados[i] == 0) {
+      buscaConexo(i, tamanho, visitados, matrizAdjacencia);
+      numeroComponentes++;
+    }
+
+    // Liberacao de Malloc
+    free(visitados);
+    free(matrizAdjacencia);
+
+    return numeroComponentes;
+  }
+
   
   return 0;
 }
@@ -135,31 +160,33 @@ int n_triangulos(grafo g) {
 matriz[i][j] = 0 se nao existe aresta em {i, j}
 matriz[i][j] = 1 se existe aresta em {i, j} */
 int **matriz_adjacencia(grafo g) {
-  int tamanho = n_vertices(g);
+  // para grafos nao direcionados somente
   vertice u, v;
+  unsigned int i, j;
+  unsigned int tamanho = (unsigned int) n_vertices(g);
 
-  // Malloca Matriz
-  int **matrizAdjacencia = malloc(tamanho*sizeof(int*) + tamanho*tamanho*sizeof(int));
-  if (!(matrizAdjacencia)) { // Checa se o malloc funcionou
+  int **matrizAdjacente;
+  matrizAdjacente = malloc(tamanho*sizeof(int*) + tamanho*tamanho*sizeof(int));
+  if(!matrizAdjacente) 
     return NULL;
-  }
-  matrizAdjacencia[0] = (int *) (matrizAdjacencia + tamanho); // Ponteiro vai para primeira linha
-  for (int i = 1; i < tamanho; i++) { // posiciona ponteiros nas demais i linhas
-    matrizAdjacencia = matrizAdjacencia[0] + (i * tamanho); // Boa pratica de indexacao
-  }
+  matrizAdjacente[0] = (int*) (matrizAdjacente + tamanho) ;  // ajusta o ponteiro da primeira linha
+  for (i=1; i < tamanho; i++)      // ajusta os ponteiros das demais linhas (i > 0)
+    matrizAdjacente[i] = matrizAdjacente[0] + (i * tamanho) ;// pra facil indexacao & somente free(ma)
 
-  for (int i = 0, u = agfstnode(g); u; u = agnxtnode(g, u), i++) { // necessario camianhar com o indice e o vertice
-    for (int j = 0, v = agfstnode(g); v; v = agnextnode(g, v), j++) {
-      if (i != j && agedge(g, u, v, NULL, 0) != NULL) { // Nao existe aresta de looping, {i, i} deve ser verificado
-        matrizAdjacencia[i][j] = 1;
-      }
-      else {
-        matrizAdjacencia[i][j] = 0;
-      }
+
+  // ma[i][j] = 0, se nao existe aresta {i, j}
+  // ma[i][j] = 1, se existe aresta {i, j}
+  for(i = 0, u = agfstnode(g); u; u = agnxtnode(g, u), i++){
+    for(j = 0, v = agfstnode(g); v; v = agnxtnode(g, v), j++){
+      // se {u, v} sao nodos diferentes e exite aresta
+      if(i != j && agedge(g, u, v, NULL, 0) != NULL)
+        matrizAdjacente[i][j] = 1;
+      else 
+        matrizAdjacente[i][j] = 0;
     }
   }
-  
-  return matrizAdjacencia;
+
+  return matrizAdjacente;
 }
 
 // -----------------------------------------------------------------------------
@@ -167,4 +194,21 @@ grafo complemento(grafo g) {
   
   return NULL;
 }
+
+
+//------------------------------------------------------------------------------
+// FUNÇÕES IMPLEMENTADAS POR MIM // 
+
+// Funcao Auxiliar de Conexo
+void buscaConexo(int i, int tamanho, int *visitados, int **matrizAdjacencia) {
+  visitados[i] = 1; // Conseguiu visitar
+
+  // Agora caminha por entre os vertices de h, entra no vertice de cada aresta
+  for (int j = 0; j < tamanho; j++) {
+    if((matrizAdjacencia[i][j] == 1) && (!visitados[j])) {
+      buscaConexo(j, tamanho, visitados, matrizAdjacencia);
+    }
+  }
+}
+
 

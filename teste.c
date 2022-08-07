@@ -11,10 +11,10 @@ int main(void) {
   grafo g = le_grafo();
 
   //escreve_grafo(g);
-  int n = completo(g);
+  int n = conexo(g);
   printf("\n %d \n", n);
   
-
+  // Liberacao de memoria
   destroi_grafo(g);
 
   return 0;
