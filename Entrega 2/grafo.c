@@ -273,6 +273,12 @@ grafo complemento(grafo g) {
 // Funcao que decompoe o Grafo, isto eh, retira seus componentes fortes
 // A estrategia aboradada para tal foi o algoritmo de Kosaraju, um algoritmo divido em 3 partes.
 grafo decompoe(grafo g) {
+  // Verifica se o grafo eh direcionado, se sim o retorna sem alteracoes
+  if(agisundirected(g) == 1) {
+    printf("A funcao decompoe(g) aceita apenas grafos direcionados.\n");
+    return g;
+  }
+
   int nVertices = n_vertices(g);
 
   // Pilha de vertices
@@ -287,8 +293,22 @@ grafo decompoe(grafo g) {
     visitados[i] = 0;
   }
 
+  // Vetor que mapeia em qual dos componentes esta presente o vertice atual
+  int *mapaDeComponentes = malloc(nVertices * sizeof(int));
+  for (int i = 0; i < nVertices; i++) {
+    mapaDeComponentes[i] = 0;
+  }
+
+  // Vetor que nos mostra quais dos vertices ja foram adicionados no subgrafo
+  int *verticesAdicionados = malloc(nVertices * sizeof(int));
+  for (int i = 0; i < nVertices; i++) {
+    verticesAdicionados[i] = 0;
+  }  
+
   // Matriz Adjacencia para a busca em profundidade
   int **matrizAdjacencia = matriz_adjacencia(g);
+
+  /* Inicio do Algoritmo de Kosaraju */
 
   // Passo 1: Busca em Profundidade, marcando todos os vetores visitados e os empilhando
   // conforme encontra becos sem saida
@@ -306,16 +326,74 @@ grafo decompoe(grafo g) {
     visitados[i] = 0;
   }
 
-  // Passo 3: Realiza a busca na ordem das definida pela pilha de becos sem saida
+  // Passo 3: Realiza a busca na ordem definida pela pilha de becos sem saida
+  // Ao final desse passo teremos um vetor que nos indica quais vertices pertencem a quais componentes
+  int compForteAtual = 1;
+
   while(topoStack != 0) {
     int raiz = stack[topoStack];
     stackPop(stack);
 
     if(visitados[raiz] == 0) {
-      buscaEmProfundidadeTransposta(matrizAdjacencia, raiz, nVertices, visitados);
-      printf("\n");
+      /* Encontra os componentes fortes */
+      buscaEmProfundidadeTransposta(compForteAtual, matrizAdjacencia, mapaDeComponentes, raiz, nVertices, visitados);
+      compForteAtual++;
     }
   }
+  compForteAtual--; // Descemos um para saber quantos componentes fortes foram encontrados
+
+  /* Fim do Algoritmo de Kosaraju */
+
+  // Agora criamos no grafo principal os componentes fortes
+  for (int componenteAtual = 1; componenteAtual <= compForteAtual; componenteAtual++) {
+    // Criacao do subgrafo do componente forte e atribuicao a g
+    grafo sub = agsubg(g, NULL, TRUE);
+
+    /* Populando o subgrafo com vertices */
+    // Primeiro vertice
+    vertice verticeAtual = agfstnode(g);
+    // Verificacao para ver se ele ja nao foi adicionado
+    // E se ele pertence ao componente que estamos preenchendo agora
+    if ((verticesAdicionados[0] == 0) && (mapaDeComponentes[0] == componenteAtual)) {
+      agnode(sub, agnameof(verticeAtual), 1);
+      verticesAdicionados[0] = 1;
+    }
+    for (int j = 1; j < nVertices; j++) {
+      verticeAtual = agnxtnode(g, verticeAtual);
+      if ((verticesAdicionados[j] == 0) && (mapaDeComponentes[j] == componenteAtual)) {
+        agnode(sub, agnameof(verticeAtual), 1);
+        verticesAdicionados[j] = 1;
+      }
+    }
+
+    /* Populando o subgrafo com Arestas */
+    // Para isso precisaremos verificar a matriz de adjacencia junto com a questao do componente
+    // que cada vertice pertence, para evitarmos adicionar uma aresta que nao pertence ao componente
+    // mas pertence ao vertice
+    vertice linha = agfstnode(g); // Reiniciamos a lista
+    for (int j = 0; j < nVertices; j++) {
+      vertice coluna = agfstnode(g);
+      for (int k = 0; k < nVertices; k++) {
+        // Verifica se existe uma aresta, depois verifica se eles estao no mesmo componente
+        if ((matrizAdjacencia[j][k] == 1) && 
+           (mapaDeComponentes[j] == componenteAtual) &&
+           (mapaDeComponentes[k] == componenteAtual)) {
+            vertice v1 = agnode (sub, agnameof(linha), 0);
+            vertice v2 = agnode (sub, agnameof(coluna), 0);
+            agedge(sub, v1, v2, NULL, 1); // Adicao da aresta propriamente dita
+          }
+        coluna = agnxtnode(g, coluna);
+      }
+      linha = agnxtnode(g, linha);
+    }
+  }
+
+  // Limpeza de memoria
+  free(stack);
+  free(visitados);
+  free(matrizAdjacencia);
+  free(mapaDeComponentes);
+  free(verticesAdicionados);
 }
 
 //------------------------------------------------------------------------------
@@ -374,16 +452,17 @@ void buscaEmProfundidade(int** matrizAdjacencia, int raiz, int nVertices, int *v
    }
 }
 
-void buscaEmProfundidadeTransposta(int** matrizAdjacencia, int raiz, int nVertices, int *visitados) {
+void buscaEmProfundidadeTransposta(int compForteAtual, int** matrizAdjacencia, int* mapaDeComponentes, int raiz, int nVertices, int *visitados) {
   if (visitados[raiz] == 0) {
     // Marca o vertice atual como visitado
     visitados[raiz] = 1;
-    printf("%d ", raiz);
-  
+    // printf("%d ", raiz);
+    mapaDeComponentes[raiz] = compForteAtual;
+
     // Visita os vertices adjacentes
     for (int i = 0; i < nVertices; i++) {
       if (matrizAdjacencia[i][raiz] == 1) {
-        buscaEmProfundidadeTransposta(matrizAdjacencia, i, nVertices, visitados);
+        buscaEmProfundidadeTransposta(compForteAtual, matrizAdjacencia, mapaDeComponentes, i, nVertices, visitados);
       }
     }
   }
